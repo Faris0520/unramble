@@ -141,7 +141,7 @@ export default function FeedbackPage() {
                   <span
                     key={key}
                     className={`rounded-sm px-2 py-0.5 text-[13px] font-semibold ${
-                      answer.star[key] ? "bg-tint-mint text-charcoal" : "bg-tint-gray text-steel"
+                      answer.star[key] ? "bg-tint-mint text-charcoal" : "bg-tint-gray text-slate"
                     }`}
                   >
                     {answer.star[key] ? label : `No ${label.toLowerCase()}`}

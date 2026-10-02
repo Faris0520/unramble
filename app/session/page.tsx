@@ -453,7 +453,7 @@ export default function SessionPage() {
             {typedMode ? (
               <div className="flex flex-col gap-4">
                 <textarea
-                  className="min-h-[160px] w-full resize-y rounded-md border border-hairline-strong bg-canvas px-3 py-2.5 text-base leading-relaxed text-ink placeholder:text-stone transition-colors focus:border-primary focus:ring-1 focus:ring-primary focus:outline-none"
+                  className="min-h-[160px] w-full resize-y rounded-md border border-hairline-strong bg-canvas px-3 py-2.5 text-base leading-relaxed text-ink placeholder:text-steel transition-colors focus:border-primary focus:ring-1 focus:ring-primary focus:outline-none"
                   placeholder="Type the answer the way you would say it out loud..."
                   value={transcript}
                   onChange={(e) => setTranscript(e.target.value)}

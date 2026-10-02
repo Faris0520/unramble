@@ -33,7 +33,7 @@ export function ButtonLink({
 }
 
 export const TEXTAREA_CLASS =
-  "w-full rounded-md border border-hairline-strong bg-canvas px-3 py-2.5 text-base leading-relaxed text-ink placeholder:text-stone transition-colors focus:border-primary focus:ring-1 focus:ring-primary focus:outline-none";
+  "w-full rounded-md border border-hairline-strong bg-canvas px-3 py-2.5 text-base leading-relaxed text-ink placeholder:text-steel transition-colors focus:border-primary focus:ring-1 focus:ring-primary focus:outline-none";
 
 export function Field({
   label,
