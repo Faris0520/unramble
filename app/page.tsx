@@ -78,7 +78,7 @@ export default function LandingPage() {
           ))}
         </div>
 
-        <div className="relative mx-auto max-w-3xl px-4 pb-0 pt-16 text-center md:px-6 md:pt-24">
+        <div className="relative mx-auto max-w-3xl px-4 pb-16 pt-16 text-center md:px-6 md:pb-24 md:pt-24">
           <p className="hero-rise text-sm font-medium text-white/70">
             A practice partner for job interviews
           </p>
@@ -116,10 +116,10 @@ export default function LandingPage() {
             screen.
           </p>
 
-          {/* The example report, half in the navy band and half below it */}
+          {/* The example report, inside the navy band with air below it */}
           <div
             id="example"
-            className="hero-rise relative z-10 mx-auto -mb-36 mt-16 max-w-4xl scroll-mt-24 text-left"
+            className="hero-rise relative z-10 mx-auto mt-16 max-w-4xl scroll-mt-24 text-left"
             style={{ animationDelay: "400ms" }}
           >
             <p className="mb-3 text-center text-[13px] font-medium text-white/70">
@@ -180,7 +180,7 @@ export default function LandingPage() {
       </section>
 
       {/* What runs locally: hairline rows, not an icon grid */}
-      <section id="local" className="bg-canvas pb-16 pt-48 md:pb-24 md:pt-56">
+      <section id="local" className="bg-canvas pb-16 pt-14 md:pb-24 md:pt-20">
         <div className="mx-auto max-w-4xl px-4 md:px-6">
           <h2 className="text-3xl font-semibold tracking-tight text-ink md:text-4xl">
             What runs on the laptop
