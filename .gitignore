@@ -18,3 +18,4 @@ npm-debug.log*
 
 # audio scratch space
 /tmp
+/docs
