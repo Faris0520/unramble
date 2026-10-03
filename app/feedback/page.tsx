@@ -1,10 +1,12 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { ArrowClockwise } from "@phosphor-icons/react";
-import { ButtonLink } from "@/components/ui";
+import { Button, ButtonLink } from "@/components/ui";
 import { Navbar } from "@/components/Navbar";
-import { loadReport, loadSession } from "@/lib/session";
+import { Reveal } from "@/components/Reveal";
+import { loadReport, loadSession, saveSession } from "@/lib/session";
 import { meterColor, meterLabel } from "@/lib/report";
 import type { FeedbackReport, SentenceTag } from "@/lib/types";
 
@@ -29,21 +31,41 @@ function formatSeconds(s: number): string {
 }
 
 export default function FeedbackPage() {
+  const router = useRouter();
   const [report, setReport] = useState<FeedbackReport | null>(null);
   const [hasSession, setHasSession] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [meterOn, setMeterOn] = useState(false);
 
   useEffect(() => {
     setReport(loadReport());
     setHasSession(loadSession() !== null);
     setLoading(false);
+    document.title = "Session report · Unramble";
   }, []);
+
+  useEffect(() => {
+    if (!report) return;
+    const id = requestAnimationFrame(() => setMeterOn(true));
+    return () => cancelAnimationFrame(id);
+  }, [report]);
+
+  // A fresh pass over the same questions: answers reset, the session keeps
+  // its questions, language, and setup.
+  function practiceAgain() {
+    const session = loadSession();
+    if (!session) return;
+    saveSession({ ...session, answers: session.questions.map(() => null) });
+    router.push("/session");
+  }
 
   if (loading) {
     return (
       <div className="min-h-[100dvh] bg-canvas">
         <Navbar />
-        <p className="mx-auto max-w-6xl px-4 py-16 text-sm text-steel md:px-6">Loading report...</p>
+        <main id="main">
+          <p className="mx-auto max-w-6xl px-4 py-16 text-sm text-steel md:px-6">Loading report...</p>
+        </main>
       </div>
     );
   }
@@ -52,7 +74,7 @@ export default function FeedbackPage() {
     return (
       <div className="min-h-[100dvh] bg-canvas">
         <Navbar />
-        <main className="mx-auto max-w-6xl px-4 py-16 md:px-6">
+        <main id="main" className="mx-auto max-w-6xl px-4 py-16 md:px-6">
           <div className="mx-auto max-w-md rounded-lg border border-hairline bg-canvas p-8 text-center">
             <h1 className="text-xl font-semibold tracking-tight text-ink">No report yet</h1>
             <p className="mt-2 text-sm leading-relaxed text-slate">
@@ -77,19 +99,19 @@ export default function FeedbackPage() {
   return (
     <div className="min-h-[100dvh] bg-canvas">
       <Navbar />
-      <main className="mx-auto max-w-3xl px-4 py-10 md:px-6 md:py-14">
+      <main id="main" className="mx-auto max-w-3xl px-4 py-10 md:px-6 md:py-14">
         <p className="text-[13px] font-semibold uppercase tracking-wide text-steel">Session report</p>
         <h1 className="mt-2 text-3xl font-semibold tracking-tight text-ink md:text-4xl">
           Your session, untangled
         </h1>
-        <p className="mt-2 text-[13px] text-steel">
+        <p className="mt-2 text-[13px] text-steel tabular-nums">
           {report.answeredCount} of {report.totalCount} questions answered ·{" "}
           {new Date(report.createdAt).toLocaleString()}
         </p>
 
         <section className="mt-8 rounded-lg border border-hairline bg-canvas p-6" aria-label="Overall result">
           <div className="flex flex-wrap items-center gap-4">
-            <span className="text-4xl font-semibold tracking-tight text-ink">{overall.tangled}</span>
+            <span className="text-4xl font-semibold tracking-tight text-ink tabular-nums">{overall.tangled}</span>
             <span
               className={`rounded-full px-2.5 py-0.5 text-[13px] font-semibold text-charcoal ${
                 overall.tangled < 25 ? "bg-tint-mint" : overall.tangled < 50 ? "bg-tint-yellow" : "bg-tint-rose"
@@ -100,8 +122,8 @@ export default function FeedbackPage() {
           </div>
           <div className="mt-4 h-1.5 overflow-hidden rounded-full bg-surface">
             <div
-              className={`h-full origin-left rounded-full ${meterColor(overall.tangled)}`}
-              style={{ transform: `scaleX(${overall.tangled / 100})` }}
+              className={`h-full origin-left rounded-full transition-transform duration-700 ease-[cubic-bezier(0.25,1,0.5,1)] motion-reduce:transition-none ${meterColor(overall.tangled)}`}
+              style={{ transform: `scaleX(${(meterOn ? overall.tangled : 0) / 100})` }}
             />
           </div>
           <p className="mt-4 text-[15px] leading-relaxed text-charcoal">{overall.summary}</p>
@@ -126,10 +148,11 @@ export default function FeedbackPage() {
 
         <div className="mt-10">
           {report.answers.map((answer) => (
-            <article
+            <Reveal
               key={answer.questionIndex}
-              className="border-t border-hairline py-10 first:border-t-0 first:pt-0"
+              className="border-t border-hairline first:border-t-0"
             >
+              <article className="py-10">
               <p className="text-[13px] font-semibold text-steel">
                 Question {answer.questionIndex + 1}
               </p>
@@ -165,7 +188,7 @@ export default function FeedbackPage() {
                 })}
               </p>
 
-              <p className="mt-4 text-[13px] text-steel">
+              <p className="mt-4 text-[13px] text-steel tabular-nums">
                 Relevance {answer.relevance}/10 · Conciseness {answer.conciseness}/10 ·{" "}
                 {answer.metrics.fillers} filler{" "}
                 {answer.metrics.fillers === 1 ? "word" : "words"} in {answer.metrics.words} words ·{" "}
@@ -194,7 +217,8 @@ export default function FeedbackPage() {
                 <ArrowClockwise size={16} aria-hidden />
                 Re-answer this one
               </ButtonLink>
-            </article>
+              </article>
+            </Reveal>
           ))}
         </div>
 
@@ -204,7 +228,7 @@ export default function FeedbackPage() {
             Run the same questions again after the tips, or set up a different role.
           </p>
           <div className="mt-5 flex flex-wrap gap-3">
-            <ButtonLink href="/session">Practice these questions again</ButtonLink>
+            <Button onClick={practiceAgain}>Practice these questions again</Button>
             <ButtonLink href="/setup" variant="secondary">
               Set up a new session
             </ButtonLink>

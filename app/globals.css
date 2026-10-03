@@ -11,6 +11,7 @@
   --color-navy-deep: #070f24;
   --color-navy-mid: #1a2a52;
   --color-link: #0075de;
+  --color-link-pressed: #005bab;
   --color-ink: #1a1a1a;
   --color-charcoal: #37352f;
   --color-slate: #5d5b54;
@@ -52,6 +53,10 @@
   outline-offset: 2px;
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 /* One-time staged entrance for the hero: hierarchy guidance, runs once. */
 @keyframes hero-rise {
   from {
@@ -68,11 +73,45 @@
   animation: hero-rise 0.7s cubic-bezier(0.32, 0.72, 0, 1) both;
 }
 
+/* Question advance in the session loop: short, once, transform+opacity only. */
+@keyframes rise-in {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.rise-in {
+  animation: rise-in 0.25s cubic-bezier(0.25, 1, 0.5, 1) both;
+}
+
+/* One-shot acknowledge ring when the checklist re-checks the machine. */
+@keyframes chip-check {
+  0% {
+    box-shadow: 0 0 0 0 rgba(86, 69, 212, 0.35);
+  }
+  100% {
+    box-shadow: 0 0 0 8px rgba(86, 69, 212, 0);
+  }
+}
+
+.chip-check {
+  animation: chip-check 0.6s cubic-bezier(0.25, 1, 0.5, 1) 1;
+}
+
 @media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
   *,
   *::before,
   *::after {
     animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
   }
 }

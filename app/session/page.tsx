@@ -37,6 +37,8 @@ export default function SessionPage() {
     failedAt: number | null;
     error: string | null;
   }>({ active: false, done: 0, total: 0, failedAt: null, error: null });
+  const [audioUrl, setAudioUrl] = useState<string | null>(null);
+  const transcriptRef = useRef<HTMLTextAreaElement>(null);
 
   const recorderRef = useRef<MediaRecorder | null>(null);
   const chunksRef = useRef<Blob[]>([]);
@@ -91,6 +93,28 @@ export default function SessionPage() {
   }, []);
 
   useEffect(() => cleanupRecording, [cleanupRecording]);
+
+  // The take exists only in tab memory: the object URL is revoked the moment
+  // it is replaced, cleared, or the page unloads.
+  useEffect(() => {
+    return () => {
+      if (audioUrl) URL.revokeObjectURL(audioUrl);
+    };
+  }, [audioUrl]);
+
+  useEffect(() => {
+    if (qState === "review") transcriptRef.current?.focus();
+  }, [qState, idx]);
+
+  useEffect(() => {
+    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    window.scrollTo({ top: 0, behavior: reduce ? "auto" : "smooth" });
+  }, [idx]);
+
+  useEffect(() => {
+    if (!session) return;
+    document.title = `Question ${idx + 1} of ${session.questions.length} · Unramble`;
+  }, [idx, session]);
 
   const stopRecording = useCallback(() => {
     recorderRef.current?.stop();
@@ -158,6 +182,7 @@ export default function SessionPage() {
         setQState("idle");
         return;
       }
+      setAudioUrl(URL.createObjectURL(wav));
       setTranscript(data.text);
       setUsedMic(true);
       setQState("review");
@@ -172,6 +197,7 @@ export default function SessionPage() {
     setSeconds(0);
     setMicError(null);
     setUsedMic(false);
+    setAudioUrl(null);
     setQState("idle");
   }
 
@@ -290,7 +316,9 @@ export default function SessionPage() {
     return (
       <div className="min-h-[100dvh] bg-canvas">
         <Navbar />
-        <p className="mx-auto max-w-6xl px-4 py-16 text-sm text-steel md:px-6">Loading session...</p>
+        <main id="main">
+          <p className="mx-auto max-w-6xl px-4 py-16 text-sm text-steel md:px-6">Loading session...</p>
+        </main>
       </div>
     );
   }
@@ -299,7 +327,7 @@ export default function SessionPage() {
     return (
       <div className="min-h-[100dvh] bg-canvas">
         <Navbar />
-        <main className="mx-auto max-w-6xl px-4 py-16 md:px-6">
+        <main id="main" className="mx-auto max-w-6xl px-4 py-16 md:px-6">
           <div className="mx-auto max-w-md rounded-lg border border-hairline bg-canvas p-8 text-center">
             <h1 className="text-xl font-semibold tracking-tight text-ink">No active session</h1>
             <p className="mt-2 text-sm leading-relaxed text-slate">
@@ -324,7 +352,7 @@ export default function SessionPage() {
     return (
       <div className="min-h-[100dvh] bg-canvas">
         <Navbar />
-        <main className="mx-auto max-w-2xl px-4 py-16 md:px-6">
+        <main id="main" className="mx-auto max-w-2xl px-4 py-16 md:px-6">
           <h1 className="text-3xl font-semibold tracking-tight text-ink">Scoring locally</h1>
           <p className="mt-3 text-base leading-relaxed text-slate">
             Gemma reads every answer and tags its sentences. This takes about a minute per answer
@@ -336,7 +364,7 @@ export default function SessionPage() {
               style={{ transform: `scaleX(${scoring.total ? scoring.done / scoring.total : 0})` }}
             />
           </div>
-          <p className="mt-3 text-[13px] text-steel" aria-live="polite">
+          <p className="mt-3 text-[13px] text-steel tabular-nums" aria-live="polite">
             Answer {Math.min(scoring.done + 1, scoring.total)} of {scoring.total}
           </p>
           {scoring.error && (
@@ -350,7 +378,7 @@ export default function SessionPage() {
                   Retry from there
                 </Button>
                 <Button variant="ghost" onClick={() => setScoring({ active: false, done: 0, total: 0, failedAt: null, error: null })}>
-                  Back to session
+                  Back to my answers
                 </Button>
               </div>
             </div>
@@ -364,7 +392,7 @@ export default function SessionPage() {
     return (
       <div className="min-h-[100dvh] bg-canvas">
         <Navbar />
-        <main className="mx-auto max-w-2xl px-4 py-16 md:px-6">
+        <main id="main" className="mx-auto max-w-2xl px-4 py-16 md:px-6">
           <h1 className="text-3xl font-semibold tracking-tight text-ink">All questions answered</h1>
           <p className="mt-3 text-base leading-relaxed text-slate">
             {total} takes recorded. Gemma will score each one: sentence tags, STAR coverage, and a
@@ -393,9 +421,9 @@ export default function SessionPage() {
   const busy = qState === "decoding" || qState === "transcribing";
 
   return (
-    <div className="min-h-[100dvh] bg-canvas">
-      <Navbar />
-      <main className="mx-auto max-w-3xl px-4 py-10 md:px-6 md:py-14">
+      <div className="min-h-[100dvh] bg-canvas">
+        <Navbar />
+        <main id="main" className="mx-auto max-w-3xl px-4 py-10 md:px-6 md:py-14">
         {drillIndex !== null && (
           <div className="mb-8 rounded-lg border border-hairline bg-tint-yellow p-4">
             <p className="text-sm leading-relaxed text-charcoal">
@@ -433,14 +461,17 @@ export default function SessionPage() {
           {session.questions.map((_, i) => (
             <span
               key={i}
-              className={`h-1.5 flex-1 rounded-full ${
+              className={`h-1.5 flex-1 rounded-full transition-colors duration-300 ${
                 session.answers[i] ? "bg-ink" : i === idx ? "bg-primary" : "bg-hairline"
               }`}
             />
           ))}
         </div>
 
-        <h1 className="mt-8 text-2xl font-semibold leading-snug tracking-tight text-ink md:text-3xl">
+        <h1
+          key={idx}
+          className="rise-in mt-8 text-2xl font-semibold leading-snug tracking-tight text-ink md:text-3xl"
+        >
           {question}
         </h1>
 
@@ -454,7 +485,8 @@ export default function SessionPage() {
             {typedMode ? (
               <div className="flex flex-col gap-4">
                 <textarea
-                  className="min-h-[160px] w-full resize-y rounded-md border border-hairline-strong bg-canvas px-3 py-2.5 text-base leading-relaxed text-ink placeholder:text-steel transition-colors focus:border-primary focus:ring-1 focus:ring-primary focus:outline-none"
+                  aria-label="Type your answer the way you would say it out loud"
+                  className="min-h-[160px] w-full resize-y rounded-md border border-hairline-strong bg-canvas px-3 py-2.5 text-base leading-relaxed text-ink placeholder:text-steel transition-[border-color,box-shadow,background-color] focus:border-primary focus:ring-1 focus:ring-primary focus:outline-none"
                   placeholder="Type the answer the way you would say it out loud..."
                   value={transcript}
                   onChange={(e) => setTranscript(e.target.value)}
@@ -494,17 +526,14 @@ export default function SessionPage() {
                   <Stop size={20} weight="fill" aria-hidden />
                   Stop recording
                 </Button>
-                <p className="flex items-center gap-2 text-sm text-charcoal" aria-live="polite">
+                <p className="flex items-center gap-2 text-sm text-charcoal tabular-nums" aria-live="polite">
                   <span aria-hidden className="h-2.5 w-2.5 animate-pulse rounded-full bg-error" />
                   Recording {formatTime(seconds)}
                 </p>
               </>
             ) : (
               <>
-                <div
-                  aria-hidden
-                  className="h-10 w-40 animate-pulse rounded-md bg-surface"
-                />
+                <div aria-hidden className="min-h-[180px] w-full animate-pulse rounded-md bg-surface" />
                 <p className="text-sm text-steel" aria-live="polite">
                   {qState === "decoding"
                     ? "Decoding the take in your browser..."
@@ -517,13 +546,24 @@ export default function SessionPage() {
 
         {qState === "review" && (
           <div className="mt-8 flex flex-col gap-4">
+            {audioUrl && (
+              <div className="flex flex-col gap-2">
+                <p className="text-sm font-medium text-ink">Listen back to the take</p>
+                <audio controls src={audioUrl} className="w-full" />
+                <p className="text-[13px] leading-snug text-steel">
+                  Hearing your own ramble is the fastest way to feel where it tangles. The
+                  recording is never saved anywhere.
+                </p>
+              </div>
+            )}
             <div className="flex flex-col gap-2">
               <label htmlFor="transcript" className="text-sm font-medium text-ink">
                 What the microphone heard. Fix any word before it gets scored.
               </label>
               <textarea
                 id="transcript"
-                className="min-h-[180px] w-full resize-y rounded-md border border-hairline-strong bg-canvas px-3 py-2.5 text-base leading-relaxed text-ink transition-colors focus:border-primary focus:ring-1 focus:ring-primary focus:outline-none"
+                ref={transcriptRef}
+                className="min-h-[180px] w-full resize-y rounded-md border border-hairline-strong bg-canvas px-3 py-2.5 text-base leading-relaxed text-ink transition-[border-color,box-shadow,background-color] focus:border-primary focus:ring-1 focus:ring-primary focus:outline-none"
                 value={transcript}
                 onChange={(e) => setTranscript(e.target.value)}
               />

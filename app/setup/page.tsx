@@ -84,7 +84,7 @@ export default function SetupPage() {
   return (
     <div className="min-h-[100dvh] bg-canvas">
       <Navbar />
-      <main className="mx-auto max-w-6xl px-4 py-10 md:px-6 md:py-14">
+      <main id="main" className="mx-auto max-w-6xl px-4 py-10 md:px-6 md:py-14">
         <h1 className="text-3xl font-semibold tracking-tight text-ink md:text-4xl">
           Set up the practice session
         </h1>
@@ -109,6 +109,7 @@ export default function SetupPage() {
             >
               <textarea
                 id="job"
+                autoFocus
                 className={`${TEXTAREA_CLASS} min-h-[160px] resize-y`}
                 placeholder="Responsibilities, requirements, the stack, the team..."
                 value={jobDescription}
@@ -171,7 +172,16 @@ export default function SetupPage() {
 
             <div className="flex flex-wrap items-center gap-4">
               <Button type="submit" disabled={generating || !aiReady}>
-                {generating ? "Asking Gemma for questions..." : "Generate my interview questions"}
+                {generating ? (
+                  <>
+                    Asking Gemma for questions
+                    <span aria-hidden className="animate-pulse">
+                      ...
+                    </span>
+                  </>
+                ) : (
+                  "Generate my interview questions"
+                )}
               </Button>
               {!aiReady && (
                 <p className="text-[13px] text-steel">

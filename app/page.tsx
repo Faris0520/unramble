@@ -1,5 +1,6 @@
 import { Navbar } from "@/components/Navbar";
 import { ButtonLink } from "@/components/ui";
+import { Reveal } from "@/components/Reveal";
 import { meterColor } from "@/lib/report";
 
 const EXAMPLE_SENTENCES: { text: string; tag: string }[] = [
@@ -49,7 +50,7 @@ const DOTS = [
 
 export default function LandingPage() {
   return (
-    <main>
+    <main id="main">
       <Navbar />
 
       {/* Hero: navy band with the product mockup breaking out of its bottom edge */}
@@ -90,7 +91,7 @@ export default function LandingPage() {
             untangled
           </h1>
           <p
-            className="hero-rise mx-auto mt-6 max-w-xl text-lg leading-relaxed text-white/80"
+            className="hero-rise mx-auto mt-6 max-w-xl text-lg leading-relaxed text-white/80 text-pretty"
             style={{ animationDelay: "160ms" }}
           >
             Speak your answer out loud, and Unramble shows the structure behind it: what set the
@@ -124,7 +125,7 @@ export default function LandingPage() {
             <p className="mb-3 text-center text-[13px] font-medium text-white/70">
               Example feedback from a practice interview for a product manager role
             </p>
-            <div className="rounded-lg border border-hairline bg-canvas p-6 shadow-[0_24px_48px_-8px_rgba(15,15,15,0.35)] md:p-8">
+            <div className="rounded-lg border border-hairline bg-canvas p-6 shadow-[0_24px_48px_-8px_rgba(15,15,15,0.2)] md:p-8">
               <div className="flex flex-wrap items-center justify-between gap-4">
                 <div className="flex items-center gap-3">
                   <span className="text-2xl font-semibold tracking-tight text-ink">38</span>
@@ -190,32 +191,35 @@ export default function LandingPage() {
           </p>
 
           <dl className="mt-10">
-            {LOCAL_ROWS.map((row) => (
-              <div
-                key={row.name}
-                className="grid grid-cols-1 gap-2 border-t border-hairline py-6 md:grid-cols-12 md:gap-6"
-              >
-                <dt className="text-base font-semibold text-ink md:col-span-4">{row.name}</dt>
-                <dd className="text-base leading-relaxed text-slate md:col-span-8">{row.desc}</dd>
-              </div>
+            {LOCAL_ROWS.map((row, i) => (
+              <Reveal key={row.name} delay={i * 80}>
+                <div className="grid grid-cols-1 gap-2 border-t border-hairline py-6 md:grid-cols-12 md:gap-6">
+                  <dt className="text-base font-semibold text-ink md:col-span-4">{row.name}</dt>
+                  <dd className="text-base leading-relaxed text-slate text-pretty md:col-span-8">{row.desc}</dd>
+                </div>
+              </Reveal>
             ))}
           </dl>
         </div>
       </section>
 
       <section className="bg-surface py-16 md:py-20">
-        <div className="mx-auto flex max-w-4xl flex-col items-start gap-6 px-4 md:flex-row md:items-center md:justify-between md:px-6">
-          <div>
-            <h2 className="text-2xl font-semibold tracking-tight text-ink">
-              Ready for your first take?
-            </h2>
-            <p className="mt-2 text-base leading-relaxed text-slate">
-              Paste a job description, add a few CV lines, and Gemma writes the questions.
-            </p>
-          </div>
-          <ButtonLink href="/setup" className="shrink-0">
-            Set up a practice session
-          </ButtonLink>
+        <div className="mx-auto max-w-4xl px-4 md:px-6">
+          <Reveal>
+            <div className="flex flex-col items-start gap-6 md:flex-row md:items-center md:justify-between">
+              <div>
+                <h2 className="text-2xl font-semibold tracking-tight text-ink">
+                  Ready for your first take?
+                </h2>
+                <p className="mt-2 max-w-xl text-base leading-relaxed text-slate text-pretty">
+                  Paste a job description, add a few CV lines, and Gemma writes the questions.
+                </p>
+              </div>
+              <ButtonLink href="/setup" className="shrink-0">
+                Set up a practice session
+              </ButtonLink>
+            </div>
+          </Reveal>
         </div>
       </section>
 
