@@ -64,6 +64,7 @@ and the model's scores of your actual answers.
 | `OLLAMA_URL` | `http://127.0.0.1:11434` | Ollama endpoint |
 | `OLLAMA_MODEL` | `gemma3:4b` | Model tag used for generation and scoring |
 | `WHISPER_MODEL` | `Xenova/whisper-base` | Transcription model; `whisper-small` is better for Indonesian |
+| `NEXT_PUBLIC_HOSTED_DEMO` | unset | Set to `true` only on a hosted preview deployment; swaps the local AI checklist for a "run it locally" notice |
 
 ## Notes
 

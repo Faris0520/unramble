@@ -8,6 +8,7 @@ import { Navbar } from "@/components/Navbar";
 import { blobToWav16k } from "@/lib/audio";
 import { loadSession, saveSession, loadReport, saveReport } from "@/lib/session";
 import { buildOverall } from "@/lib/report";
+import { HOSTED_DEMO } from "@/lib/hosted";
 import type { FeedbackReport, PracticeAnswer, ScoredAnswer, SessionData } from "@/lib/types";
 
 type QState = "idle" | "recording" | "decoding" | "transcribing" | "review";
@@ -438,10 +439,12 @@ export default function SessionPage() {
         {ollamaDown && (
           <div className="mb-8 flex flex-wrap items-center justify-between gap-3 rounded-lg border border-hairline bg-tint-yellow p-4">
             <p className="text-sm leading-relaxed text-charcoal">
-              Ollama is not ready, so scoring is offline. You can still practice and record takes.
+              {HOSTED_DEMO
+                ? "This hosted preview cannot generate questions or score answers. Run Unramble on your laptop for the full practice loop."
+                : "Ollama is not ready, so scoring is offline. You can still practice and record takes."}
             </p>
             <ButtonLink href="/setup" variant="secondary" className="shrink-0">
-              Open the checklist
+              {HOSTED_DEMO ? "How to run it locally" : "Open the checklist"}
             </ButtonLink>
           </div>
         )}

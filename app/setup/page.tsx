@@ -5,7 +5,9 @@ import { useRouter } from "next/navigation";
 import { Button, Field, TEXTAREA_CLASS } from "@/components/ui";
 import { Navbar } from "@/components/Navbar";
 import { LocalAiPanel, type HealthData } from "@/components/LocalAiPanel";
+import { HostedDemoPanel } from "@/components/HostedDemoPanel";
 import { saveSession, saveSetup, loadSetup } from "@/lib/session";
+import { HOSTED_DEMO } from "@/lib/hosted";
 import type { Language, SessionData } from "@/lib/types";
 
 interface FormError {
@@ -42,7 +44,7 @@ export default function SetupPage() {
       setCv(saved.cv);
       setLanguage(saved.language);
     }
-    void checkHealth();
+    if (!HOSTED_DEMO) void checkHealth();
   }, [checkHealth]);
 
   async function generate() {
@@ -79,7 +81,7 @@ export default function SetupPage() {
     }
   }
 
-  const aiReady = health?.ollama && health.hasModel;
+  const aiReady = !HOSTED_DEMO && Boolean(health?.ollama && health.hasModel);
 
   return (
     <div className="min-h-[100dvh] bg-canvas">
@@ -185,7 +187,9 @@ export default function SetupPage() {
               </Button>
               {!aiReady && (
                 <p className="text-[13px] text-steel">
-                  Finish the local AI checklist first, then this unlocks.
+                  {HOSTED_DEMO
+                    ? "Generation only runs in the local version, on your laptop."
+                    : "Finish the local AI checklist first, then this unlocks."}
                 </p>
               )}
             </div>
@@ -198,7 +202,11 @@ export default function SetupPage() {
           </form>
 
           <aside className="flex flex-col gap-6 lg:col-span-5">
-            <LocalAiPanel health={health} onRetry={() => void checkHealth()} retrying={checking} />
+            {HOSTED_DEMO ? (
+              <HostedDemoPanel />
+            ) : (
+              <LocalAiPanel health={health} onRetry={() => void checkHealth()} retrying={checking} />
+            )}
 
             <section className="rounded-lg border border-hairline bg-surface p-6">
               <h2 className="text-lg font-semibold tracking-tight text-ink">
