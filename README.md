@@ -69,5 +69,3 @@ and the model's scores of your actual answers.
 
 - Built for the DEV Hacktoberfest Weekend challenge, October 2026: "Build for a Friend",
   with open-source AI at its core.
-- The first recording downloads Whisper weights once; the first question generation warms
-  Gemma. After that, disconnect the WiFi and everything still works.
