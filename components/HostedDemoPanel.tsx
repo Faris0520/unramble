@@ -36,6 +36,9 @@ export function HostedDemoPanel() {
         <li className="text-sm leading-relaxed text-charcoal">
           <span className="font-semibold">3. Run the app</span> from the repo folder:
           <div className="mt-1.5">
+            <CopyCommand command="git clone https://github.com/faris0520/unramble && cd unramble" />
+          </div>
+          <div className="mt-1.5">
             <CopyCommand command="npm install && npm run build && npm start" />
           </div>
         </li>
