@@ -4,21 +4,25 @@ DEV POST DRAFT (for the challenge submission, English is required for prizes)
 Before publishing, fill in every [FILL: ...] marker with real information:
 1. The friend's real first name (or the name they want published), their real role/industry,
    and your real relationship to them. Do not invent details.
-2. The GitHub repo URL (create the repo from this folder and push: git remote add origin ...; git push -u origin main).
-3. The demo video embed. Record: setup page checklist -> generate questions -> a spoken take
-   (with the WiFi icon visible!) -> the color-coded report -> a re-drill. 60 to 90 seconds is enough.
-4. The real handover reaction after you give it to them. Do NOT publish this section until you
-   have their actual words. Delete the section if you cannot get their permission to quote them.
-5. Optional: save your agent session with DevRelay and embed it via the agent_session liquid tag.
-6. Tags: devchallenge, weekendchallenge, hf26challenge. Add one cover image: the feedback report
-   screenshot works well.
+2. Code block: the {% github %} tag below already points to Faris0520/unramble. Create the
+   GitHub repo under exactly that name and push: git remote add origin
+   https://github.com/Faris0520/unramble.git && git push -u origin main
+3. Demo: upload the walkthrough to YouTube (unlisted is fine) and replace VIDEO_ID in the
+   {% youtube %} tag. Recording script that covers the whole story in 60-90 seconds:
+   hero with the example report -> setup page with the local AI checklist -> paste a job
+   description -> questions generated -> one spoken take (WiFi icon visible!) -> the
+   color-coded report -> a re-drill of the weakest question -> disconnect WiFi, record again.
+4. Cover image suggestion: the landing hero with the example feedback card breaking out of
+   the navy band. Second choice: the full-screen report view.
+5. The handover section must be their actual reaction. Do NOT publish it until you have real
+   words (and their permission to quote). Delete the section if they prefer not to be quoted.
+6. Optional: save your agent session with DevRelay and embed it via the agent_session tag.
+7. Tags: devchallenge, weekendchallenge, hf26challenge. Prize category listed at the bottom.
 
 Everything between the markers below is the post body.
 -->
 
 # I built my friend a job-interview practice partner that never leaves her laptop
-
-{% user [FILL: friends-dev-username-if-any] %}
 
 ## What I Built
 
@@ -50,15 +54,14 @@ report: all in local storage. The models run on her machine. There is no server 
 
 ## Demo
 
-{% video [FILL: demo-video-url] %}
+{% youtube VIDEO_ID %}
 
-[FILL: one paragraph describing what the video shows, including the offline moment if you
-recorded one. Suggestion: film a full take with the WiFi turned off, and let the recording
-show it. That one shot tells the whole story.]
+[FILL: one short paragraph describing what the video shows, including the offline moment if
+you recorded it. A take recorded with the WiFi off tells the whole story by itself.]
 
 ## Code
 
-{% github [FILL: your-github-username/unramble] %}
+{% github Faris0520/unramble %}
 
 ## How I Built It
 
@@ -84,8 +87,10 @@ the machine guessed. Second, the on-screen checklist: the setup page pings Ollam
 exactly which local piece is missing, and prints the one command that fixes it. A friend who
 has never opened a terminal gets the terminal command with a Copy button.
 
-The whole thing is Next.js with Tailwind, styled after Notion's design system, because the
-report should read like a calm document, not a dashboard.
+The interface follows Notion's design system, on purpose: a report about your weakest answer
+should read like a calm document, not a dashboard. Pastel tints carry the sentence structure,
+purple is reserved for the one action per screen, and the same layout works on a phone,
+because practice happens wherever the laptop opens.
 
 ## Why Does Open Innovation Matter
 
