@@ -52,6 +52,22 @@
   outline-offset: 2px;
 }
 
+/* One-time staged entrance for the hero: hierarchy guidance, runs once. */
+@keyframes hero-rise {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.hero-rise {
+  animation: hero-rise 0.7s cubic-bezier(0.32, 0.72, 0, 1) both;
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,

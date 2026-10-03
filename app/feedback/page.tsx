@@ -2,7 +2,8 @@
 
 import { useEffect, useState } from "react";
 import { ArrowClockwise } from "@phosphor-icons/react";
-import { ButtonLink, Header } from "@/components/ui";
+import { ButtonLink } from "@/components/ui";
+import { Navbar } from "@/components/Navbar";
 import { loadReport, loadSession } from "@/lib/session";
 import { meterColor, meterLabel } from "@/lib/report";
 import type { FeedbackReport, SentenceTag } from "@/lib/types";
@@ -41,7 +42,7 @@ export default function FeedbackPage() {
   if (loading) {
     return (
       <div className="min-h-[100dvh] bg-canvas">
-        <Header />
+        <Navbar />
         <p className="mx-auto max-w-6xl px-4 py-16 text-sm text-steel md:px-6">Loading report...</p>
       </div>
     );
@@ -50,7 +51,7 @@ export default function FeedbackPage() {
   if (!report) {
     return (
       <div className="min-h-[100dvh] bg-canvas">
-        <Header />
+        <Navbar />
         <main className="mx-auto max-w-6xl px-4 py-16 md:px-6">
           <div className="mx-auto max-w-md rounded-lg border border-hairline bg-canvas p-8 text-center">
             <h1 className="text-xl font-semibold tracking-tight text-ink">No report yet</h1>
@@ -75,7 +76,7 @@ export default function FeedbackPage() {
 
   return (
     <div className="min-h-[100dvh] bg-canvas">
-      <Header />
+      <Navbar />
       <main className="mx-auto max-w-3xl px-4 py-10 md:px-6 md:py-14">
         <p className="text-[13px] font-semibold uppercase tracking-wide text-steel">Session report</p>
         <h1 className="mt-2 text-3xl font-semibold tracking-tight text-ink md:text-4xl">

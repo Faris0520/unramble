@@ -2,7 +2,8 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { Button, Field, Header, TEXTAREA_CLASS } from "@/components/ui";
+import { Button, Field, TEXTAREA_CLASS } from "@/components/ui";
+import { Navbar } from "@/components/Navbar";
 import { LocalAiPanel, type HealthData } from "@/components/LocalAiPanel";
 import { saveSession, saveSetup, loadSetup } from "@/lib/session";
 import type { Language, SessionData } from "@/lib/types";
@@ -82,7 +83,7 @@ export default function SetupPage() {
 
   return (
     <div className="min-h-[100dvh] bg-canvas">
-      <Header />
+      <Navbar />
       <main className="mx-auto max-w-6xl px-4 py-10 md:px-6 md:py-14">
         <h1 className="text-3xl font-semibold tracking-tight text-ink md:text-4xl">
           Set up the practice session

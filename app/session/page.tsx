@@ -3,7 +3,8 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Microphone, Stop, ArrowClockwise, Check } from "@phosphor-icons/react";
-import { Button, ButtonLink, Header } from "@/components/ui";
+import { Button, ButtonLink } from "@/components/ui";
+import { Navbar } from "@/components/Navbar";
 import { blobToWav16k } from "@/lib/audio";
 import { loadSession, saveSession, loadReport, saveReport } from "@/lib/session";
 import { buildOverall } from "@/lib/report";
@@ -288,7 +289,7 @@ export default function SessionPage() {
   if (phase === "loading") {
     return (
       <div className="min-h-[100dvh] bg-canvas">
-        <Header />
+        <Navbar />
         <p className="mx-auto max-w-6xl px-4 py-16 text-sm text-steel md:px-6">Loading session...</p>
       </div>
     );
@@ -297,7 +298,7 @@ export default function SessionPage() {
   if (phase === "empty") {
     return (
       <div className="min-h-[100dvh] bg-canvas">
-        <Header />
+        <Navbar />
         <main className="mx-auto max-w-6xl px-4 py-16 md:px-6">
           <div className="mx-auto max-w-md rounded-lg border border-hairline bg-canvas p-8 text-center">
             <h1 className="text-xl font-semibold tracking-tight text-ink">No active session</h1>
@@ -322,7 +323,7 @@ export default function SessionPage() {
   if (scoring.active || scoring.error) {
     return (
       <div className="min-h-[100dvh] bg-canvas">
-        <Header />
+        <Navbar />
         <main className="mx-auto max-w-2xl px-4 py-16 md:px-6">
           <h1 className="text-3xl font-semibold tracking-tight text-ink">Scoring locally</h1>
           <p className="mt-3 text-base leading-relaxed text-slate">
@@ -362,7 +363,7 @@ export default function SessionPage() {
   if (phase === "alldone") {
     return (
       <div className="min-h-[100dvh] bg-canvas">
-        <Header />
+        <Navbar />
         <main className="mx-auto max-w-2xl px-4 py-16 md:px-6">
           <h1 className="text-3xl font-semibold tracking-tight text-ink">All questions answered</h1>
           <p className="mt-3 text-base leading-relaxed text-slate">
@@ -393,7 +394,7 @@ export default function SessionPage() {
 
   return (
     <div className="min-h-[100dvh] bg-canvas">
-      <Header />
+      <Navbar />
       <main className="mx-auto max-w-3xl px-4 py-10 md:px-6 md:py-14">
         {drillIndex !== null && (
           <div className="mb-8 rounded-lg border border-hairline bg-tint-yellow p-4">

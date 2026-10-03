@@ -4,7 +4,7 @@ type ButtonVariant = "primary" | "secondary" | "dark" | "ghost" | "on-dark";
 
 export function buttonClasses(variant: ButtonVariant = "primary"): string {
   const base =
-    "inline-flex items-center justify-center gap-2 rounded-md px-[18px] py-[10px] text-sm font-medium transition-colors duration-150 disabled:pointer-events-none disabled:opacity-40";
+    "inline-flex items-center justify-center gap-2 rounded-md px-[18px] py-[10px] text-sm font-medium transition duration-150 active:scale-[0.96] disabled:pointer-events-none disabled:opacity-40";
   const variants: Record<ButtonVariant, string> = {
     // The one purple action per screen (design.md: purple is a CTA signal, never decoration)
     primary: "bg-primary text-white hover:bg-primary-pressed active:bg-primary-deep",
@@ -75,20 +75,5 @@ export function Wordmark({ tone = "light" }: { tone?: "light" | "dark" }) {
       unramble
       <span className={tone === "dark" ? "text-[#d6b6f6]" : "text-primary"}>.</span>
     </span>
-  );
-}
-
-export function Header() {
-  return (
-    <header className="border-b border-hairline">
-      <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3 md:px-6">
-        <a href="/" aria-label="Unramble home">
-          <Wordmark />
-        </a>
-        <span className="hidden text-[13px] text-steel sm:block">
-          100% local, nothing uploaded
-        </span>
-      </div>
-    </header>
   );
 }
